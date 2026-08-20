@@ -19,9 +19,12 @@
   body{margin:0;background:var(--paper);color:var(--ink);font-family:'Noto Sans KR',sans-serif;}
   .masthead{background:var(--navy);color:var(--paper);padding:22px 24px 20px;border-bottom:4px solid var(--teal);}
   .masthead-inner{max-width:960px;margin:0 auto;}
+  .masthead-row{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;}
   .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.14em;color:#9FB6C9;text-transform:uppercase;margin-bottom:6px;}
   .masthead h1{font-family:'Noto Serif KR',serif;font-weight:900;font-size:24px;margin:0;}
   .masthead .sub{font-size:12.5px;color:#B7C4D2;margin-top:6px;}
+  .report-btn{background:var(--teal);color:#fff;font-weight:700;font-size:13.5px;padding:11px 20px;border-radius:6px;text-decoration:none;white-space:nowrap;flex-shrink:0;}
+  .report-btn:hover{background:#255A50;}
   main{max-width:960px;margin:0 auto;padding:24px;}
   .panel{background:#fff;border:1px solid var(--line);}
   p.desc-line{font-size:12.5px;color:var(--ink-soft);margin:0 0 16px;}
@@ -49,6 +52,8 @@
   footer{text-align:center;font-size:11.5px;color:var(--ink-soft);padding:24px;}
   @media (max-width:640px){
     main{padding:14px;}
+    .masthead-row{align-items:stretch;}
+    .report-btn{text-align:center;}
     .report-row{grid-template-columns:1fr;gap:4px;}
     .report-row .desc{white-space:normal;}
     .modal-overlay{padding:0;}
@@ -58,9 +63,14 @@
 </head>
 <body>
 <div class="masthead"><div class="masthead-inner">
-  <div class="eyebrow">전남광주통합특별시의회 교육특별전문위원실</div>
-  <h1>교육예산낭비신고센터 — 공개 게시판</h1>
-  <div class="sub">구글 시트와 연동된 공개 열람 페이지입니다 (로그인 불필요)</div>
+  <div class="masthead-row">
+    <div>
+      <div class="eyebrow">전남광주통합특별시의회 교육특별전문위원실</div>
+      <h1>교육예산낭비신고센터 — 공개 게시판</h1>
+      <div class="sub">구글 시트와 연동된 공개 열람 페이지입니다 (로그인 불필요)</div>
+    </div>
+    <a class="report-btn" href="" id="report-link" target="_blank" rel="noopener">📝 신고하기</a>
+  </div>
 </div></div>
 
 <main>
@@ -74,6 +84,7 @@
    구글 시트 열기 → 파일 > 공유 > 웹에 게시 > 응답 시트 선택 > CSV 형식 > 게시
    ============================================================ */
 const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRbCO99ykgJgLHFyVWH-SKGm9lEEhW5tW8b4t6qD9LSgaAnvSKnutj_y1l1m6g5CFh6GipBy_Wz_SLX/pub?gid=378320620&single=true&output=csv";
+const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSfsTdH_1BIs3nbQl__RPvn9YOSkiau2KMWwrRIPR-j7jflxmw/viewform";
 
 function escapeHtml(s){
   return (s||"").replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -100,6 +111,11 @@ function normalizeRow(row){
 }
 
 async function load(){
+  const linkEl = document.getElementById('report-link');
+  if(linkEl){
+    if(FORM_URL){ linkEl.href = FORM_URL; }
+    else{ linkEl.style.display = 'none'; }
+  }
   const root = document.getElementById('root');
   if(!CSV_URL || CSV_URL.includes('여기에_')){
     root.innerHTML = `<div class="config-note">⚠ 아직 CSV 링크가 설정되지 않았습니다. 이 파일 상단의 <code>CSV_URL</code> 값에, 구글 시트를 "웹에 게시"해서 얻은 CSV 주소를 붙여넣어 주세요.</div>`;
