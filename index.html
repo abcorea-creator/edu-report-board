@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>교육예산낭비신고센터 — 공개 게시판</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@700;900&family=Noto+Sans+KR:wght@400;500;700;900&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<style>
+  :root{
+    --navy:#152238; --paper:#F1F0EC; --paper-2:#E8E6DE;
+    --ink:#181818; --ink-soft:#4A4A46;
+    --teal:#2E6E63; --teal-soft:#DCE9E4;
+    --amber:#C08A2E; --amber-soft:#F3E7CE;
+    --red:#A8402E; --line:#D8D5CB; --white:#fff;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:'Noto Sans KR',sans-serif;}
+  .masthead{background:var(--navy);color:var(--paper);padding:22px 24px 20px;border-bottom:4px solid var(--teal);}
+  .masthead-inner{max-width:960px;margin:0 auto;}
+  .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.14em;color:#9FB6C9;text-transform:uppercase;margin-bottom:6px;}
+  .masthead h1{font-family:'Noto Serif KR',serif;font-weight:900;font-size:24px;margin:0;}
+  .masthead .sub{font-size:12.5px;color:#B7C4D2;margin-top:6px;}
+  main{max-width:960px;margin:0 auto;padding:24px;}
+  .panel{background:#fff;border:1px solid var(--line);}
+  p.desc-line{font-size:12.5px;color:var(--ink-soft);margin:0 0 16px;}
+  .filter-row{display:flex;gap:8px;margin:0;flex-wrap:wrap;padding:16px 20px;border-top:1px solid var(--line);}
+  .filter-row select,.filter-row input{border:1px solid var(--line);border-radius:6px;padding:7px 10px;font-size:12.5px;}
+  .filter-row input{flex:1;min-width:160px;}
+  .report-row{display:grid;grid-template-columns:1fr 90px 74px 100px;gap:10px;align-items:center;padding:12px 20px;border-bottom:1px solid var(--line);cursor:pointer;font-size:12.5px;}
+  .report-row:hover{background:#FAFAF7;}
+  .report-row .desc{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .report-row .cat{color:var(--teal);font-weight:700;}
+  .status-tag{display:inline-block;font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;}
+  .status-확인중{background:var(--amber-soft);color:#6B4F13;}
+  .status-조치중{background:var(--teal-soft);color:#173B33;}
+  .status-답변완료{background:#DCE4F0;color:#1F3352;}
+  .empty-note{padding:30px 20px;text-align:center;color:var(--ink-soft);font-size:13px;}
+  .modal-overlay{position:fixed;inset:0;background:rgba(21,34,56,.55);display:flex;align-items:flex-start;justify-content:center;padding:40px 16px;z-index:50;overflow-y:auto;}
+  .modal{background:#fff;max-width:600px;width:100%;}
+  .modal-head{padding:18px 22px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;}
+  .modal-close{border:none;background:none;font-size:20px;cursor:pointer;color:var(--ink-soft);}
+  .modal-body{padding:20px 22px;}
+  .field-lab{font-size:11px;color:var(--ink-soft);font-weight:700;text-transform:uppercase;margin-bottom:4px;}
+  .field-val{font-size:13.5px;line-height:1.7;margin-bottom:16px;white-space:pre-wrap;}
+  .reply-item{background:var(--teal-soft);border-radius:6px;padding:10px 12px;font-size:13px;line-height:1.6;}
+  .config-note{background:var(--amber-soft);border:1px solid #E0C285;border-radius:6px;padding:16px;font-size:13px;line-height:1.7;margin-bottom:16px;}
+  footer{text-align:center;font-size:11.5px;color:var(--ink-soft);padding:24px;}
+  @media (max-width:640px){
+    main{padding:14px;}
+    .report-row{grid-template-columns:1fr;gap:4px;}
+    .report-row .desc{white-space:normal;}
+    .modal-overlay{padding:0;}
+    .modal{max-width:none;width:100%;min-height:100%;}
+  }
+</style>
+</head>
+<body>
+<div class="masthead"><div class="masthead-inner">
+  <div class="eyebrow">전남광주통합특별시의회 교육특별전문위원실</div>
+  <h1>교육예산낭비신고센터 — 공개 게시판</h1>
+  <div class="sub">구글 시트와 연동된 공개 열람 페이지입니다 (로그인 불필요)</div>
+</div></div>
+
+<main>
+  <div id="root"></div>
+</main>
+<footer>본 페이지는 구글 시트(공개 게시)를 읽어와 보여주는 정적 조회 화면입니다. 신고 접수는 구글폼에서, 답변 등록·상태 변경은 관리자가 구글 시트에서 직접 진행합니다.</footer>
+
+<script>
+/* ============================================================
+   ⬇️ 여기에 "웹에 게시"로 얻은 CSV 링크를 붙여넣으세요.
+   구글 시트 열기 → 파일 > 공유 > 웹에 게시 > 응답 시트 선택 > CSV 형식 > 게시
+   ============================================================ */
+const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRbCO99ykgJgLHFyVWH-SKGm9lEEhW5tW8b4t6qD9LSgaAnvSKnutj_y1l1m6g5CFh6GipBy_Wz_SLX/pub?gid=378320620&single=true&output=csv";
+
+function escapeHtml(s){
+  return (s||"").replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function fmtDate(v){
+  const d = new Date(v);
+  if(isNaN(d)) return v || '';
+  return `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}`;
+}
+
+let ALL = [];
+let state = { filterCategory:'전체', search:'', selected:null };
+
+function normalizeRow(row){
+  return {
+    timestamp: row['타임스탬프'] || row['Timestamp'] || '',
+    category: row['신고 유형'] || '기타',
+    description: row['신고 내용'] || '',
+    org: row['관련 학교·기관명 (선택)'] || '',
+    link: row['사진·증빙자료 링크 (선택)'] || '',
+    status: (row['상태(확인중/조치중/답변완료)'] || '확인중').trim() || '확인중',
+    reply: row['답변(공개게시)'] || '',
+  };
+}
+
+async function load(){
+  const root = document.getElementById('root');
+  if(!CSV_URL || CSV_URL.includes('여기에_')){
+    root.innerHTML = `<div class="config-note">⚠ 아직 CSV 링크가 설정되지 않았습니다. 이 파일 상단의 <code>CSV_URL</code> 값에, 구글 시트를 "웹에 게시"해서 얻은 CSV 주소를 붙여넣어 주세요.</div>`;
+    return;
+  }
+  root.innerHTML = `<div class="empty-note">불러오는 중입니다...</div>`;
+  try{
+    const res = await fetch(CSV_URL);
+    if(!res.ok) throw new Error('CSV 응답 오류: ' + res.status);
+    const text = await res.text();
+    const parsed = Papa.parse(text, {header:true, skipEmptyLines:true});
+    ALL = parsed.data.map(normalizeRow).reverse(); // 최신 접수가 위로
+    renderList();
+  }catch(e){
+    root.innerHTML = `<div class="config-note">데이터를 불러오지 못했습니다: ${escapeHtml(e.message)}<br><br>구글 시트가 "웹에 게시" 상태인지, CSV 링크가 정확한지 확인해 주세요.</div>`;
+  }
+}
+
+function getCategories(){
+  const set = new Set(ALL.map(r=>r.category).filter(Boolean));
+  return Array.from(set);
+}
+
+function renderList(){
+  const root = document.getElementById('root');
+  const filtered = ALL.filter(r=>{
+    if(state.filterCategory!=='전체' && r.category!==state.filterCategory) return false;
+    if(state.search && !r.description.includes(state.search)) return false;
+    return true;
+  });
+
+  root.innerHTML = `
+    <div class="panel">
+      <div style="padding:20px;">
+        <p class="desc-line">접수된 모든 신고와 답변을 누구나 볼 수 있습니다. 접수순으로 표시됩니다.</p>
+      </div>
+      <div id="list">
+        ${filtered.length===0 ? '<div class="empty-note">해당 조건의 신고가 없습니다.</div>' :
+          filtered.map((r,i)=>`
+            <div class="report-row" data-idx="${ALL.indexOf(r)}">
+              <span class="desc"><span class="cat">[${escapeHtml(r.category)}]</span> ${escapeHtml(r.description)}</span>
+              <span class="status-tag status-${escapeHtml(r.status)}">${escapeHtml(r.status)}</span>
+              <span></span>
+              <span style="color:var(--ink-soft);">${fmtDate(r.timestamp)}</span>
+            </div>
+          `).join('')
+        }
+      </div>
+      <div class="filter-row">
+        <select id="filter-cat">
+          <option>전체</option>
+          ${getCategories().map(c=>`<option ${state.filterCategory===c?'selected':''}>${escapeHtml(c)}</option>`).join('')}
+        </select>
+        <input id="search-input" placeholder="내용 검색" value="${escapeHtml(state.search)}">
+      </div>
+    </div>
+  `;
+
+  document.getElementById('filter-cat').onchange = e=>{ state.filterCategory=e.target.value; renderList(); };
+  document.getElementById('search-input').oninput = e=>{ state.search=e.target.value; renderList(); };
+  document.querySelectorAll('.report-row').forEach(row=>{
+    row.onclick = ()=>{ state.selected = ALL[parseInt(row.dataset.idx)]; renderModal(); };
+  });
+}
+
+function renderModal(){
+  const existing = document.getElementById('modal-overlay');
+  if(existing) existing.remove();
+  const r = state.selected;
+  if(!r) return;
+  const overlay = document.createElement('div');
+  overlay.className='modal-overlay';
+  overlay.id='modal-overlay';
+  overlay.innerHTML = `
+    <div class="modal">
+      <div class="modal-head"><h3 style="font-family:'Noto Serif KR',serif;font-size:16px;margin:0;">${escapeHtml(r.category)}</h3><button class="modal-close" id="modal-close">×</button></div>
+      <div class="modal-body">
+        <div style="margin-bottom:14px;"><span class="status-tag status-${escapeHtml(r.status)}">${escapeHtml(r.status)}</span> <span style="font-size:12px;color:var(--ink-soft);">접수 ${fmtDate(r.timestamp)}</span></div>
+        <div class="field-lab">신고 내용</div>
+        <div class="field-val">${escapeHtml(r.description)}</div>
+        ${r.org ? `<div class="field-lab">관련 기관</div><div class="field-val">${escapeHtml(r.org)}</div>` : ''}
+        ${r.link ? `<div class="field-lab">첨부 링크</div><div class="field-val"><a href="${escapeHtml(r.link)}" target="_blank" rel="noopener">${escapeHtml(r.link)}</a></div>` : ''}
+        <div class="field-lab">답변</div>
+        ${r.reply ? `<div class="reply-item">${escapeHtml(r.reply)}</div>` : `<div style="font-size:12.5px;color:var(--ink-soft);">아직 등록된 답변이 없습니다.</div>`}
+      </div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+  document.getElementById('modal-close').onclick = ()=>{ state.selected=null; overlay.remove(); };
+  overlay.onclick = e=>{ if(e.target.id==='modal-overlay'){ state.selected=null; overlay.remove(); } };
+}
+
+load();
+</script>
+</body>
+</html>
