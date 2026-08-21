@@ -33,6 +33,7 @@
   main{max-width:960px;margin:0 auto;padding:24px;}
   .panel{background:#fff;border:1px solid var(--line);}
   p.desc-line{font-size:12.5px;color:var(--ink-soft);margin:0 0 16px;}
+  .section-divider{height:2px;background:var(--navy);opacity:.15;margin:0;}
   .filter-row{display:flex;gap:8px;margin:0;flex-wrap:wrap;padding:16px 20px;border-top:1px solid var(--line);}
   .filter-row select,.filter-row input{border:1px solid var(--line);border-radius:6px;padding:7px 10px;font-size:12.5px;}
   .filter-row input{flex:1;min-width:160px;}
@@ -142,9 +143,13 @@ async function load(){
   }
 }
 
+const CATEGORIES = [
+  '기타','예산 집행 부적정','불필요한 사업·시설','수의계약 의혹','시설물 방치·유휴',
+  '중복 편성','이월·불용액 과다','보조금 부정 수급','인건비·수당 과다 편성',
+  '업무추진비 오남용','공사비 과다 계상','위탁사업 부적정','통계·실적 부풀리기'
+];
 function getCategories(){
-  const set = new Set(ALL.map(r=>r.category).filter(Boolean));
-  return Array.from(set);
+  return CATEGORIES;
 }
 
 function renderList(){
@@ -158,8 +163,9 @@ function renderList(){
   root.innerHTML = `
     <div class="panel">
       <div style="padding:20px;">
-        <p class="desc-line">접수된 모든 신고와 답변을 누구나 볼 수 있습니다. 접수순으로 표시됩니다.</p>
+        <p class="desc-line" style="margin-bottom:0;">접수된 모든 신고와 답변을 누구나 볼 수 있습니다. 접수순으로 표시됩니다.</p>
       </div>
+      <div class="section-divider"></div>
       <div id="list">
         ${filtered.length===0 ? '<div class="empty-note">해당 조건의 신고가 없습니다.</div>' :
           filtered.map((r,i)=>`
