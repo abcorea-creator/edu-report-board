@@ -55,10 +55,26 @@
   .field-val{font-size:13.5px;line-height:1.7;margin-bottom:16px;white-space:pre-wrap;}
   .reply-item{background:var(--teal-soft);border-radius:6px;padding:10px 12px;font-size:13px;line-height:1.6;}
   .config-note{background:var(--amber-soft);border:1px solid #E0C285;border-radius:6px;padding:16px;font-size:13px;line-height:1.7;margin-bottom:16px;}
-  footer{text-align:center;font-size:11.5px;color:var(--ink-soft);padding:24px;}
+  footer{background:var(--paper-2);border-top:1px solid var(--line);padding:0;margin-top:24px;}
+  .footer-inner{max-width:960px;margin:0 auto;padding:24px;}
+  .footer-note{text-align:center;font-size:11.5px;color:var(--ink-soft);margin-bottom:20px;}
+  .footer-org{border-top:1px solid var(--line);padding-top:18px;display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;}
+  .footer-org-name{font-family:'Noto Serif KR',serif;font-weight:700;font-size:13.5px;color:var(--navy);line-height:1.6;flex-shrink:0;}
+  .footer-office{display:flex;gap:32px;flex-wrap:wrap;flex:1;justify-content:flex-start;}
+  .footer-office-block{display:flex;flex-direction:column;gap:2px;font-size:11.5px;color:var(--ink-soft);line-height:1.6;}
+  .footer-office-title{font-weight:700;color:var(--ink);font-size:12.5px;margin-bottom:2px;}
+  .committee-links{border-bottom:1px solid var(--line);padding-bottom:18px;margin-bottom:18px;}
+  .committee-label{font-size:11px;font-weight:700;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.04em;margin-bottom:10px;}
+  .committee-row{display:flex;flex-wrap:wrap;gap:7px;}
+  .committee-row a{background:#fff;border:1px solid var(--line);color:var(--ink-soft);font-size:11.5px;padding:5px 11px;border-radius:20px;text-decoration:none;white-space:nowrap;}
+  .committee-row a:hover{border-color:var(--teal);color:var(--teal);}
+  .committee-row a:first-child{background:var(--navy);border-color:var(--navy);color:#fff;font-weight:700;}
+  .committee-row a:first-child:hover{background:#1F3352;color:#fff;}
   @media (max-width:640px){
     main{padding:14px;}
     .masthead-row{align-items:center;}
+    .footer-org{flex-direction:column;gap:14px;}
+    .footer-office{justify-content:flex-start;gap:20px;}
     .report-row{grid-template-columns:1fr;gap:4px;}
     .report-row .desc{white-space:normal;}
     .modal-overlay{padding:0;}
@@ -85,7 +101,49 @@
 <main>
   <div id="root"></div>
 </main>
-<footer>본 페이지는 구글 시트(공개 게시)를 읽어와 보여주는 정적 조회 화면입니다. 신고 접수는 구글폼에서, 답변 등록·상태 변경은 관리자가 구글 시트에서 직접 진행합니다.</footer>
+<footer>
+  <div class="footer-inner">
+    <div class="committee-links">
+      <div class="committee-label">전남광주통합특별시의회 관련 위원회</div>
+      <div class="committee-row">
+        <a href="https://council.jeonnam-gwangju.go.kr" target="_blank" rel="noopener">전남광주통합특별시의회 홈페이지</a>
+        <a href="https://council.jeonnam-gwangju.go.kr/jngjassem/contents/plmComposition" target="_blank" rel="noopener">의회운영위원회</a>
+        <a href="https://council.jeonnam-gwangju.go.kr/jngjassem/contents/etpComposition" target="_blank" rel="noopener">기획재정위원회</a>
+        <a href="https://council.jeonnam-gwangju.go.kr/jngjassem/contents/ascComposition" target="_blank" rel="noopener">행정소방위원회</a>
+        <a href="https://council.jeonnam-gwangju.go.kr/jngjassem/contents/ficComposition" target="_blank" rel="noopener">미래산업위원회</a>
+        <a href="https://council.jeonnam-gwangju.go.kr/jngjassem/contents/afcComposition" target="_blank" rel="noopener">농수산위원회</a>
+        <a href="https://council.jeonnam-gwangju.go.kr/jngjassem/contents/ceecComposition" target="_blank" rel="noopener">기후환경에너지위원회</a>
+        <a href="https://council.jeonnam-gwangju.go.kr/jngjassem/contents/jecComposition" target="_blank" rel="noopener">일자리경제위원회</a>
+        <a href="https://council.jeonnam-gwangju.go.kr/jngjassem/contents/cccComposition" target="_blank" rel="noopener">안전건설위원회</a>
+        <a href="https://council.jeonnam-gwangju.go.kr/jngjassem/contents/rtcComposition" target="_blank" rel="noopener">도로교통위원회</a>
+        <a href="https://council.jeonnam-gwangju.go.kr/jngjassem/contents/ctscComposition" target="_blank" rel="noopener">문화관광체육위원회</a>
+        <a href="https://council.jeonnam-gwangju.go.kr/jngjassem/contents/hwcComposition" target="_blank" rel="noopener">보건복지위원회</a>
+        <a href="https://council.jeonnam-gwangju.go.kr/jngjassem/contents/ecComposition" target="_blank" rel="noopener">교육위원회</a>
+        <a href="https://council.jeonnam-gwangju.go.kr/jngjassem/contents/bscComposition" target="_blank" rel="noopener">시청 예산결산특별위원회</a>
+        <a href="https://council.jeonnam-gwangju.go.kr/jngjassem/contents/bscComposition2" target="_blank" rel="noopener">교육청 예산결산특별위원회</a>
+        <a href="https://council.jeonnam-gwangju.go.kr/jngjassem/contents/escComposition" target="_blank" rel="noopener">윤리특별위원회</a>
+        <a href="https://council.jeonnam-gwangju.go.kr/jngjassem/contents/scComposition1" target="_blank" rel="noopener">반도체클러스터 조성지원 상설특별위원회</a>
+        <a href="https://council.jeonnam-gwangju.go.kr/jngjassem/contents/scComposition2" target="_blank" rel="noopener">기본사회 상설특별위원회</a>
+      </div>
+    </div>
+    <div class="footer-note">본 페이지는 구글 시트(공개 게시)를 읽어와 보여주는 정적 조회 화면입니다. 신고 접수는 구글폼에서, 답변 등록·상태 변경은 관리자가 구글 시트에서 직접 진행합니다.</div>
+    <div class="footer-org">
+      <div class="footer-org-name">전남광주통합특별시의회<br>교육청예산결산특별위원회</div>
+      <div class="footer-office">
+        <div class="footer-office-block">
+          <span class="footer-office-title">전남청사</span>
+          <span>주소 58564 전남광주통합특별시 무안군 삼향읍 오룡길1</span>
+          <span>TEL 061-286-8409</span>
+        </div>
+        <div class="footer-office-block">
+          <span class="footer-office-title">광주청사</span>
+          <span>주소 61945 전남광주통합특별시 서구 치평로111</span>
+          <span>TEL 062-613-5001</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
 
 <script>
 /* ============================================================
