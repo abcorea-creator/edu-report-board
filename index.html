@@ -65,11 +65,16 @@
   .footer-office-title{font-weight:700;color:var(--ink);font-size:12.5px;margin-bottom:2px;}
   .committee-links{border-bottom:1px solid var(--line);padding-bottom:18px;margin-bottom:18px;}
   .committee-label{font-size:11px;font-weight:700;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.04em;margin-bottom:10px;}
-  .committee-row{display:flex;flex-wrap:wrap;gap:7px;}
-  .committee-row a{background:#fff;border:1px solid var(--line);color:var(--ink-soft);font-size:11.5px;padding:5px 11px;border-radius:20px;text-decoration:none;white-space:nowrap;}
-  .committee-row a:hover{border-color:var(--teal);color:var(--teal);}
-  .committee-row a:first-child{background:var(--navy);border-color:var(--navy);color:#fff;font-weight:700;}
-  .committee-row a:first-child:hover{background:#1F3352;color:#fff;}
+  .committee-select{
+    background:var(--navy);color:#fff;border:none;border-radius:6px;
+    padding:10px 16px;font-size:12.5px;font-weight:700;font-family:'Noto Sans KR',sans-serif;
+    cursor:pointer;max-width:100%;
+    -webkit-appearance:none;-moz-appearance:none;appearance:none;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='white'><path d='M5.5 7.5l4.5 4.5 4.5-4.5z'/></svg>");
+    background-repeat:no-repeat;background-position:right 12px center;background-size:14px;
+    padding-right:34px;
+  }
+  .committee-select:hover{background-color:#1F3352;}
   @media (max-width:640px){
     main{padding:14px;}
     .masthead-row{align-items:center;}
@@ -105,26 +110,27 @@
   <div class="footer-inner">
     <div class="committee-links">
       <div class="committee-label">전남광주통합특별시의회 관련 위원회</div>
-      <div class="committee-row">
-        <a href="https://council.jeonnam-gwangju.go.kr" target="_blank" rel="noopener">전남광주통합특별시의회 홈페이지</a>
-        <a href="https://council.jeonnam-gwangju.go.kr/jngjassem/contents/plmComposition" target="_blank" rel="noopener">의회운영위원회</a>
-        <a href="https://council.jeonnam-gwangju.go.kr/jngjassem/contents/etpComposition" target="_blank" rel="noopener">기획재정위원회</a>
-        <a href="https://council.jeonnam-gwangju.go.kr/jngjassem/contents/ascComposition" target="_blank" rel="noopener">행정소방위원회</a>
-        <a href="https://council.jeonnam-gwangju.go.kr/jngjassem/contents/ficComposition" target="_blank" rel="noopener">미래산업위원회</a>
-        <a href="https://council.jeonnam-gwangju.go.kr/jngjassem/contents/afcComposition" target="_blank" rel="noopener">농수산위원회</a>
-        <a href="https://council.jeonnam-gwangju.go.kr/jngjassem/contents/ceecComposition" target="_blank" rel="noopener">기후환경에너지위원회</a>
-        <a href="https://council.jeonnam-gwangju.go.kr/jngjassem/contents/jecComposition" target="_blank" rel="noopener">일자리경제위원회</a>
-        <a href="https://council.jeonnam-gwangju.go.kr/jngjassem/contents/cccComposition" target="_blank" rel="noopener">안전건설위원회</a>
-        <a href="https://council.jeonnam-gwangju.go.kr/jngjassem/contents/rtcComposition" target="_blank" rel="noopener">도로교통위원회</a>
-        <a href="https://council.jeonnam-gwangju.go.kr/jngjassem/contents/ctscComposition" target="_blank" rel="noopener">문화관광체육위원회</a>
-        <a href="https://council.jeonnam-gwangju.go.kr/jngjassem/contents/hwcComposition" target="_blank" rel="noopener">보건복지위원회</a>
-        <a href="https://council.jeonnam-gwangju.go.kr/jngjassem/contents/ecComposition" target="_blank" rel="noopener">교육위원회</a>
-        <a href="https://council.jeonnam-gwangju.go.kr/jngjassem/contents/bscComposition" target="_blank" rel="noopener">시청 예산결산특별위원회</a>
-        <a href="https://council.jeonnam-gwangju.go.kr/jngjassem/contents/bscComposition2" target="_blank" rel="noopener">교육청 예산결산특별위원회</a>
-        <a href="https://council.jeonnam-gwangju.go.kr/jngjassem/contents/escComposition" target="_blank" rel="noopener">윤리특별위원회</a>
-        <a href="https://council.jeonnam-gwangju.go.kr/jngjassem/contents/scComposition1" target="_blank" rel="noopener">반도체클러스터 조성지원 상설특별위원회</a>
-        <a href="https://council.jeonnam-gwangju.go.kr/jngjassem/contents/scComposition2" target="_blank" rel="noopener">기본사회 상설특별위원회</a>
-      </div>
+      <select class="committee-select" id="committee-select">
+        <option value="" selected>🔗 위원회 홈페이지 바로가기</option>
+        <option value="https://council.jeonnam-gwangju.go.kr">전남광주통합특별시의회 홈페이지</option>
+        <option value="https://council.jeonnam-gwangju.go.kr/jngjassem/contents/plmComposition">의회운영위원회</option>
+        <option value="https://council.jeonnam-gwangju.go.kr/jngjassem/contents/etpComposition">기획재정위원회</option>
+        <option value="https://council.jeonnam-gwangju.go.kr/jngjassem/contents/ascComposition">행정소방위원회</option>
+        <option value="https://council.jeonnam-gwangju.go.kr/jngjassem/contents/ficComposition">미래산업위원회</option>
+        <option value="https://council.jeonnam-gwangju.go.kr/jngjassem/contents/afcComposition">농수산위원회</option>
+        <option value="https://council.jeonnam-gwangju.go.kr/jngjassem/contents/ceecComposition">기후환경에너지위원회</option>
+        <option value="https://council.jeonnam-gwangju.go.kr/jngjassem/contents/jecComposition">일자리경제위원회</option>
+        <option value="https://council.jeonnam-gwangju.go.kr/jngjassem/contents/cccComposition">안전건설위원회</option>
+        <option value="https://council.jeonnam-gwangju.go.kr/jngjassem/contents/rtcComposition">도로교통위원회</option>
+        <option value="https://council.jeonnam-gwangju.go.kr/jngjassem/contents/ctscComposition">문화관광체육위원회</option>
+        <option value="https://council.jeonnam-gwangju.go.kr/jngjassem/contents/hwcComposition">보건복지위원회</option>
+        <option value="https://council.jeonnam-gwangju.go.kr/jngjassem/contents/ecComposition">교육위원회</option>
+        <option value="https://council.jeonnam-gwangju.go.kr/jngjassem/contents/bscComposition">시청 예산결산특별위원회</option>
+        <option value="https://council.jeonnam-gwangju.go.kr/jngjassem/contents/bscComposition2">교육청 예산결산특별위원회</option>
+        <option value="https://council.jeonnam-gwangju.go.kr/jngjassem/contents/escComposition">윤리특별위원회</option>
+        <option value="https://council.jeonnam-gwangju.go.kr/jngjassem/contents/scComposition1">반도체클러스터 조성지원 상설특별위원회</option>
+        <option value="https://council.jeonnam-gwangju.go.kr/jngjassem/contents/scComposition2">기본사회 상설특별위원회</option>
+      </select>
     </div>
     <div class="footer-note">본 페이지는 구글 시트(공개 게시)를 읽어와 보여주는 정적 조회 화면입니다. 신고 접수는 구글폼에서, 답변 등록·상태 변경은 관리자가 구글 시트에서 직접 진행합니다.</div>
     <div class="footer-org">
@@ -278,6 +284,15 @@ function renderModal(){
   document.body.appendChild(overlay);
   document.getElementById('modal-close').onclick = ()=>{ state.selected=null; overlay.remove(); };
   overlay.onclick = e=>{ if(e.target.id==='modal-overlay'){ state.selected=null; overlay.remove(); } };
+}
+
+const committeeSelect = document.getElementById('committee-select');
+if(committeeSelect){
+  committeeSelect.onchange = e=>{
+    const url = e.target.value;
+    if(url){ window.open(url, '_blank', 'noopener'); }
+    e.target.selectedIndex = 0;
+  };
 }
 
 load();
