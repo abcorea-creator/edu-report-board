@@ -4,6 +4,25 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>교육예산낭비신고센터</title>
+
+<!-- 카카오톡 등에 링크 공유 시 미리보기 카드 -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="교육예산낭비신고센터">
+<meta property="og:description" content="전남광주통합특별시의회 교육특별전문위원실 — 이름·연락처 없이 안심하고 신고하세요.">
+<meta property="og:image" content="https://abcorea-creator.github.io/edu-report-board/site-assets/icon-512.png">
+<meta property="og:url" content="https://abcorea-creator.github.io/edu-report-board/">
+<meta name="twitter:card" content="summary">
+
+<!-- 파비콘 및 홈 화면 추가 아이콘 -->
+<link rel="icon" type="image/png" sizes="32x32" href="site-assets/favicon-32.png">
+<link rel="apple-touch-icon" href="site-assets/icon-180.png">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#152238">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="예산낭비신고">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@700;900&family=Noto+Sans+KR:wght@400;500;700;900&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
@@ -55,6 +74,12 @@
   .field-val{font-size:13.5px;line-height:1.7;margin-bottom:16px;white-space:pre-wrap;}
   .reply-item{background:var(--teal-soft);border-radius:6px;padding:10px 12px;font-size:13px;line-height:1.6;}
   .config-note{background:var(--amber-soft);border:1px solid #E0C285;border-radius:6px;padding:16px;font-size:13px;line-height:1.7;margin-bottom:16px;}
+  .notice-panel{background:var(--amber-soft);border:1px solid #E0C285;border-radius:6px;padding:16px 18px;margin-bottom:16px;}
+  .notice-label{font-size:11px;font-weight:700;color:#6B4F13;text-transform:uppercase;letter-spacing:.04em;margin-bottom:10px;}
+  .notice-item+.notice-item{margin-top:12px;padding-top:12px;border-top:1px dashed #E0C285;}
+  .notice-title{font-weight:700;font-size:13.5px;color:#3A2C08;}
+  .notice-date{font-weight:400;font-size:11.5px;color:#8A6D2F;}
+  .notice-body{font-size:12.5px;color:#5A4419;line-height:1.6;margin-top:4px;white-space:pre-wrap;}
   footer{background:var(--paper-2);border-top:1px solid var(--line);padding:0;margin-top:24px;}
   .footer-inner{max-width:960px;margin:0 auto;padding:24px;}
   .footer-note{text-align:center;font-size:11.5px;color:var(--ink-soft);margin-bottom:20px;}
@@ -158,6 +183,8 @@
    ============================================================ */
 const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRbCO99ykgJgLHFyVWH-SKGm9lEEhW5tW8b4t6qD9LSgaAnvSKnutj_y1l1m6g5CFh6GipBy_Wz_SLX/pub?gid=378320620&single=true&output=csv";
 const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSfsTdH_1BIs3nbQl__RPvn9YOSkiau2KMWwrRIPR-j7jflxmw/viewform";
+// 공지사항 탭을 "웹에 게시"해서 얻은 CSV 링크를 여기에 붙여넣으세요. 비워두면 공지사항 영역이 표시되지 않습니다.
+const NOTICE_CSV_URL = "";
 
 function escapeHtml(s){
   return (s||"").replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -183,6 +210,39 @@ function normalizeRow(row){
   };
 }
 
+let NOTICES = [];
+
+async function loadNotices(){
+  if(!NOTICE_CSV_URL) return;
+  try{
+    const res = await fetch(NOTICE_CSV_URL);
+    if(!res.ok) return;
+    const text = await res.text();
+    const parsed = Papa.parse(text, {header:true, skipEmptyLines:true});
+    NOTICES = parsed.data
+      .map(row=>({date: row['날짜']||'', title: row['제목']||'', body: row['내용']||''}))
+      .filter(n=>n.title || n.body)
+      .reverse(); // 시트에 나중에 추가한 것이 위로
+  }catch(e){
+    NOTICES = [];
+  }
+}
+
+function renderNotices(){
+  if(!NOTICE_CSV_URL || NOTICES.length===0) return '';
+  return `
+    <div class="notice-panel">
+      <div class="notice-label">📢 공지사항</div>
+      ${NOTICES.map(n=>`
+        <div class="notice-item">
+          <div class="notice-title">${escapeHtml(n.title)}${n.date?` <span class="notice-date">· ${escapeHtml(n.date)}</span>`:''}</div>
+          ${n.body?`<div class="notice-body">${escapeHtml(n.body)}</div>`:''}
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
 async function load(){
   const linkEl = document.getElementById('report-link');
   if(linkEl){
@@ -196,6 +256,7 @@ async function load(){
   }
   root.innerHTML = `<div class="empty-note">불러오는 중입니다...</div>`;
   try{
+    await loadNotices();
     const res = await fetch(CSV_URL);
     if(!res.ok) throw new Error('CSV 응답 오류: ' + res.status);
     const text = await res.text();
@@ -225,6 +286,7 @@ function renderList(){
   });
 
   root.innerHTML = `
+    ${renderNotices()}
     <div class="panel">
       <div style="padding:20px;">
         <p class="desc-line" style="margin-bottom:0;">접수된 모든 신고와 답변을 누구나 볼 수 있습니다. 접수순으로 표시됩니다.</p>

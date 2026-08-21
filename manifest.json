@@ -1,0 +1,20 @@
+{
+  "name": "교육예산낭비신고센터",
+  "short_name": "예산낭비신고",
+  "start_url": "https://abcorea-creator.github.io/edu-report-board/",
+  "display": "standalone",
+  "background_color": "#F1F0EC",
+  "theme_color": "#152238",
+  "icons": [
+    {
+      "src": "site-assets/icon-180.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    },
+    {
+      "src": "site-assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
